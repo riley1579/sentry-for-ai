@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-Sentry plugin for AI coding assistants (Claude Code, Cursor, Codex, and Grok).
+Sentry plugin for AI coding assistants: a portable Agent Plugin (the Agent Plugins
+standard) plus client-specific plugins for Google Antigravity, Claude Code, GitHub
+Copilot, Cursor, Codex, and Grok.
 Provides MCP server integration and skills.
 
 ## Commit Attribution
@@ -46,21 +48,31 @@ SDK; per-platform install and signal code comes from the Sentry docs, which the 
 
 ## MCP Server
 
-Sentry MCP server configured at `https://mcp.sentry.dev/mcp`. The source of truth is
-`mcp.json`: Cursor consumes it as-is at the plugin root, while the Codex and Grok builds
-emit it as `.mcp.json` (Codex’s validator requires the dotted name; Grok auto-discovers
-it).
-Claude declares the server inline in its `plugin.json` (`mcpServers`), so the Claude
-build ships no MCP file.
+Sentry MCP server configured at `https://mcp.sentry.dev/mcp`. Each build ships it in the
+shape its agent expects:
+
+- **Root `mcp.json`** is the source for most builds.
+  Cursor consumes it as-is at the plugin root, while the Codex and Grok builds emit it
+  as `.mcp.json` (Codex’s validator requires the dotted name; Grok auto-discovers it).
+  The Antigravity build reads the server URL from it and writes `mcp_config.json`
+  (`serverUrl` rather than `url`).
+- **`src/plugins/agent-plugin/mcp.json`** is a separate copy in the Agent Plugins 1.0.0
+  schema (`streamable-http` transport).
+  The Agent Plugin and Copilot builds both ship it as `mcp.json`, so a URL change must
+  land in both files.
+- **Claude** declares the server inline in its `plugin.json` (`mcpServers`), so the
+  Claude build ships no MCP file.
 
 ## Releasing the Plugins
 
-The four agent plugins version in lockstep from `src/plugins/version.json`. Each agent
-manifest carries `"version": "0.0.0"` as a placeholder; `install_plugin_manifest` in
-`scripts/build-common.sh` stamps the real value over it at build time, so a release
+All seven plugin distributions version in lockstep from `src/plugins/version.json`. Each
+agent manifest carries `"version": "0.0.0"` as a placeholder; `install_plugin_manifest`
+in `scripts/build-common.sh` stamps the real value over it at build time, so a release
 bumps a single file and every agent ships the same number.
 
-Each `getsentry/plugin-<agent>` repository carries two rolling branches:
+Each distribution repository (`getsentry/plugin-<agent>`, plus `getsentry/agent-plugin`
+for the portable build; `deploy-plugins.yml` has the full map) carries two rolling
+branches:
 
 - **`develop`** — rewritten by `deploy-plugins.yml` on every push to this repo’s `main`,
   so its tip is always the latest build.
@@ -91,7 +103,7 @@ one.
 
 Consumers still track each plugin repo’s `main` rather than a tag: Anthropic’s
 marketplace pins `plugin-claude` by SHA, the installer clones `plugin-cursor`, and the
-Codex and Grok CLIs install by repository.
+Antigravity, Codex, and Grok CLIs install by repository.
 The `v<version>` tags exist so a shipped version is addressable for rollback and for
 pinning once each harness supports it.
 
