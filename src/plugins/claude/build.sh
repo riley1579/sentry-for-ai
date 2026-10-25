@@ -3,14 +3,12 @@
 # build.sh — Build the Claude Code distribution of the Sentry plugin.
 #
 # Claude consumes the plugin at the dist branch ROOT (its
-# `.claude-plugin/marketplace.json` uses `source: "./"`) and HONORS
-# `disable-model-invocation`, so the skill-tree routing works natively. No skill
-# mutation is needed: this copies the manifest (from alongside this script) plus
-# the shared content from the repo root.
+# `.claude-plugin/marketplace.json` uses `source: "./"`). No skill mutation is
+# needed: this copies the manifest (from alongside this script) plus the shared
+# content from the repo root.
 #
 # Claude's MCP server is declared inline in `plugin.json` (`mcpServers`), so no
-# `.mcp.json` is shipped here; the root `mcp.json` only feeds the Cursor and
-# Codex builds.
+# `.mcp.json` is shipped here; the root `mcp.json` feeds the other builds.
 #
 # Skill content (skills/, references/, SKILL_TREE.md) is read from CONTENT_ROOT,
 # defaulting to the repo's src/ directory. Override CONTENT_ROOT to build a

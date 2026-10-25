@@ -25,5 +25,5 @@ grok plugin install getsentry/plugin-grok --trust
 - The hosted [Sentry MCP server](https://mcp.sentry.dev) for querying your Sentry
   environment.
 
-A few router skills are always available; the rest are hidden behind them with
-`disable-model-invocation` and load on demand, so they do not crowd the model’s context.
+Each skill covers one task and is described by what it does, so Grok picks the right one
+on its own when you ask for that task.

@@ -5,13 +5,9 @@
 # Like Claude, Cursor consumes the plugin at the dist branch ROOT
 # (`.cursor-plugin/marketplace.json` uses `source: "./"`). Cursor expects the MCP
 # config as `mcp.json` (no leading dot), which is the repo's source-of-truth name,
-# so it copies straight through. Claude and Codex emit the dotted `.mcp.json` from
+# so it copies straight through. Codex and Grok emit the dotted `.mcp.json` from
 # the same source. No skill mutation: copies the manifest (from alongside this
 # script) plus the shared content from the repo root.
-#
-# Note: Cursor documents honoring `disable-model-invocation`, but a known Cursor
-# bug currently hides plugin-delivered skills entirely. We ship the field
-# as-authored; that is a Cursor-side issue, not a packaging one.
 #
 # Skill content (skills/, references/, SKILL_TREE.md) is read from CONTENT_ROOT,
 # defaulting to the repo's src/ directory. Override CONTENT_ROOT to build a
