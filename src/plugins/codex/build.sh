@@ -2,20 +2,11 @@
 #
 # build.sh — Build the Codex distribution of the Sentry plugin.
 #
-# Codex differs from Claude/Cursor in two ways this transform handles:
-#
-#   1. Layout — the plugin must live in a SUBDIR (`plugins/sentry/`) referenced
-#      by a marketplace catalog at `.agents/plugins/marketplace.json`. Codex
-#      cannot treat the repo/branch root as the plugin (Claude/Cursor can).
-#
-#   2. Hidden skills — Codex's validator REJECTS `disable-model-invocation` in
-#      SKILL.md frontmatter. Its native equivalent is a per-skill
-#      `agents/openai.yaml` carrying `policy.allow_implicit_invocation: false`.
-#      For every skill the source marks `disable-model-invocation: true`, we
-#      strip that line and emit an `agents/openai.yaml` that hides it. The
-#      router skills (which lack the field) stay implicitly invocable. This
-#      reproduces the skill-tree routing with Codex's own mechanism, fully
-#      bundled, with no skills.sentry.dev dependency.
+# Codex differs from Claude/Cursor in layout: the plugin must live in a SUBDIR
+# (`plugins/sentry/`) referenced by a marketplace catalog at
+# `.agents/plugins/marketplace.json`. Codex cannot treat the repo/branch root as
+# the plugin (Claude/Cursor can). Skills ship unchanged; every one is
+# model-invocable.
 #
 # Source lives alongside this script (plugin.json, marketplace.json) and is
 # assembled into the `.codex-plugin/` layout here; shared content comes from the
@@ -47,12 +38,7 @@ cp LICENSE "$TARGET_DIR/LICENSE"
 cp mcp.json "$PLUGIN/.mcp.json"
 copy_skill_tree "$CONTENT_ROOT" "$PLUGIN/SKILL_TREE.md"
 rsync -a assets/ "$PLUGIN/assets/"
-# copy_skills hydrates each skill's shared references before the Codex transform,
-# so the hidden-leaf rewrite sees the final skill tree. (Codex ships no commands.)
+# copy_skills hydrates each skill's shared references. (Codex ships no commands.)
 copy_skills "$CONTENT_ROOT" "$PLUGIN/skills"
-
-# Per-skill transform: strip the rejected field + emit agents/openai.yaml for
-# every hidden leaf (skills the source marked disable-model-invocation: true).
-python3 "$SRC_DIR/hide-skills.py" "$PLUGIN/skills"
 
 echo "Built Codex dist into $TARGET_DIR (plugins/$PLUGIN_NAME)."

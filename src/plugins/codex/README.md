@@ -26,6 +26,5 @@ codex plugin add sentry@sentry-plugin-marketplace
 - The hosted [Sentry MCP server](https://mcp.sentry.dev) for querying your Sentry
   environment.
 
-A few entry-point skills are always available; the rest are hidden behind them using
-Codex’s `agents/openai.yaml` (`policy.allow_implicit_invocation: false`) and surface on
-demand, so they do not crowd the model’s context.
+Each skill covers one task and is described by what it does, so Codex picks the right
+one on its own when you ask for that task.
