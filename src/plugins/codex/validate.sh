@@ -5,9 +5,8 @@
 # Codex has no published JSON Schema; OpenAI ships an authoritative validator
 # script instead. We run it (pinned to a known-good commit) against the built
 # plugin root. It enforces an allow-list of manifest keys — which is why the
-# Codex manifest carries no `$schema` — and also checks the bundled SKILL.md /
-# agents/openai.yaml files this dist generates. The validator needs PyYAML,
-# supplied on the fly via `uv run --with`.
+# Codex manifest carries no `$schema` — and also checks the bundled SKILL.md
+# files. The validator needs PyYAML, supplied on the fly via `uv run --with`.
 #
 # Usage: validate.sh <TARGET_DIR>   (a tree produced by build.sh)
 

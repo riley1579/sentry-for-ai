@@ -98,8 +98,7 @@ installer.
 ### Build it yourself
 
 Each `src/plugins/<agent>/build.sh` takes an output directory and writes that agent’s
-plugin into it (the Codex build moves the plugin under `plugins/sentry/` and swaps the
-skill tree’s `disable-model-invocation` flags for Codex’s `agents/openai.yaml` policy):
+plugin into it (the Codex build moves the plugin under `plugins/sentry/`):
 
 ```bash
 git clone https://github.com/getsentry/sentry-for-ai.git
